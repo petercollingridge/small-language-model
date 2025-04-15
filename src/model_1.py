@@ -1,6 +1,7 @@
 """ Start testing with a simple example of two, very similar sentences. """
 
 
+from neural_net import train_simple_model
 from utils.text import (
     get_hot_one_encoding,
     get_word_pair_vectors,
@@ -22,5 +23,7 @@ vocab = get_vocab_list(sentence_tokens)
 encode_word = get_hot_one_encoding(vocab)
 
 input_vectors, output_vectors = get_word_pair_vectors(sentence_tokens, encode_word)
-print(input_vectors)
-print(output_vectors)
+# print(input_vectors)
+# print(output_vectors)
+
+model = train_simple_model(input_vectors, output_vectors)
