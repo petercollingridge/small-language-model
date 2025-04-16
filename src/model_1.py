@@ -8,7 +8,7 @@ from utils.text import (
     get_vocab_list,
     tokenise_sentence,
 )
-from vis.svg_model import generate_svg, write_svg_to_file
+from vis.svg_model import NeuralNetSVG, write_svg_to_file
 
 sentences = [
     "sheep are meek",
@@ -26,7 +26,7 @@ input_vectors, output_vectors = get_word_pair_vectors(sentence_tokens, encode_wo
 # print(input_vectors)
 # print(output_vectors)
 
-model = train_simple_model(input_vectors, output_vectors)
+model = train_simple_model(input_vectors, output_vectors, loop_n=10)
 
-model_svg = generate_svg(model, labels=vocab)
-write_svg_to_file(model_svg, os.path.join('src', 'vis','test.svg'))
+model_svg = NeuralNetSVG(model, labels=vocab)
+model_svg.write_to_file(os.path.join('src', 'vis','test2.svg'))

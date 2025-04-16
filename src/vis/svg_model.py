@@ -3,112 +3,149 @@ import torch.nn.functional as F
 
 STYLES = """
 <style>
-    circle { fill: lightblue; stroke: white; stroke-width: 1; }
-    line { stroke-width: 1; }
+    circle { fill: lightblue; stroke: white; stroke-width: 2; }
+    line { stroke-width: 2; }
     text { font-family: sans-serif; font-size: 12px; fill: black; alignment-baseline: middle; }
 </style>\n"""
 
-def generate_svg(
-    neural_net,
-    labels=[],
-    margin_x=100,
-    margin_y=10,
-    node_radius=20,
-    layer_spacing=150,
-    node_spacing=60
-):
+
+class Node:
     """
-    Generate SVG code to display the nodes and connections of a simple neural net.
-
-    Args:
-      neural_net (list of list of float): A list of layers,
-        where each layer is a list of node values.
-      width (int): Width of the SVG canvas.
-      height (int): Height of the SVG canvas.
-      node_radius (int): Radius of each node.
-      layer_spacing (int): Horizontal spacing between layers.
-      node_spacing (int): Vertical spacing between nodes.
-
-    Returns:
-      str: SVG code as a string.
+    A class representing a node in the neural network.
     """
 
-    nodes = []
-    edges = []
-    text = []
-    max_layers = len(neural_net)
-    max_nodes = max(max(layer.in_features, layer.out_features) for layer in neural_net)
-    width = max_layers * layer_spacing + (node_radius + margin_x) * 2
-    height = (max_nodes - 1) * node_spacing + (node_radius + margin_y) * 2
+    def __init__(self, x, y, radius):
+        self.x = x
+        self.y = y
+        self.radius = radius
 
-    def get_x(layer_idx):
-        return  margin_x + node_radius + layer_idx * layer_spacing
+    def __str__(self):
+        return f'<circle cx="{self.x}" cy="{self.y}" r="{self.radius}" />'
 
-    def get_y(layer_size, node_idx):
-        return height / 2 + (node_idx - (layer_size - 1) / 2) * node_spacing
 
-    def add_layer(layer_idx, layer_size):
-        x = get_x(layer_idx)
+class Edge:
+    """
+    A class representing an edge between two nodes in the neural network.
+    """
+
+    def __init__(self, x1, y1, x2, y2, weight):
+        self.x1 = x1
+        self.y1 = y1
+        self.x2 = x2
+        self.y2 = y2
+        self.weight = weight
+
+    def get_attributes(self):
+        opacity = F.sigmoid(self.weight).item() ** 2
+        colour = "blue" if self.weight.item() > 0 else "red"
+        return {
+            "stroke": colour,
+            "opacity": f"{opacity:.2f}"
+        }
+
+    def __str__(self):
+        attr = self.get_attributes()
+        attr_string = " ".join(f'{key}="{value}"' for key, value in attr.items())
+        return f'<line x1="{self.x1}" y1="{self.y1}" x2="{self.x2}" y2="{self.y2}" {attr_string}/>'
+
+
+class NeuralNetSVG:
+    """
+    A class to generate SVG representation of a neural network.
+    """
+
+    def __init__(self, neural_net, labels=None):
+        self.neural_net = neural_net
+        self.labels = labels
+        self.nodes = {}
+        self.edges = []
+        self.text = []
+
+        self.margin_x = 100
+        self.margin_y = 10
+        self.node_radius = 20
+        self.layer_spacing = 150
+        self.node_spacing = 60
+
+        max_nodes = max(max(layer.in_features, layer.out_features) for layer in neural_net)
+        self.width = len(neural_net) * self.layer_spacing + (self.node_radius + self.margin_x) * 2
+        self.height = (max_nodes - 1) * self.node_spacing + (self.node_radius + self.margin_y) * 2
+
+        self.add_nodes()
+        self.add_edges()
+        self.add_labels()
+
+    def get_x(self, layer_idx): 
+        return self.margin_x + self.node_radius + layer_idx * self.layer_spacing
+
+    def get_y(self, layer_size, node_idx):
+        return self.height / 2 + (node_idx - (layer_size - 1) / 2) * self.node_spacing
+
+    def add_nodes_in_layer(self, layer_idx, layer_size):
+        x = self.get_x(layer_idx)
         # Add nodes
         for node_idx in range(layer_size):
-            y = get_y(layer_size, node_idx)
-            nodes.append(f'\n\t<circle cx="{x}" cy="{y}" r="{node_radius}" />')
+            y = self.get_y(layer_size, node_idx)
+            node_id = (layer_idx, node_idx)
+            self.nodes[node_id] = Node(x, y, self.node_radius)
 
-    # Add connections between nodes
-    for layer_idx, layer in enumerate(neural_net):
-        weights = layer.weight.data
-        layer_in_size = layer.in_features
-        layer_out_size = layer.out_features
-        x1 = get_x(layer_idx)
-        x2 = get_x(layer_idx + 1)
+    def add_nodes(self):
+        # Add nodes for inputs
+        for layer_idx, layer in enumerate(self.neural_net):
+            self.add_nodes_in_layer(layer_idx, layer.in_features)
 
-        for idx2, col2 in enumerate(weights):
-            y2 = get_y(layer_out_size, idx2)
+        # Add final layer for outputs
+        self.add_nodes_in_layer(len(self.neural_net), self.neural_net[-1].out_features)
 
-            for idx1, weight in enumerate(col2):
-                opacity = F.sigmoid(weight).item() ** 2
-                colour = "blue" if weight.item() > 0 else "red"
+    def add_edges(self):
+        for layer_idx, layer in enumerate(self.neural_net):
+            weights = layer.weight.data
 
-                if opacity > 0.01:
-                    y1 = get_y(layer_in_size, idx1)
-                    edges.append(
-                        f'\n\t<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{colour}" opacity="{opacity:.2f}"/>'
-                    )
+            for y2, col2 in enumerate(weights):
+                node2 = self.nodes[(layer_idx + 1, y2)]
 
-    # Add nodes for inputs
-    for layer_idx, layer in enumerate(neural_net):
-        add_layer(layer_idx, layer.in_features)
+                for y1, weight in enumerate(col2):
+                    node1 = self.nodes[(layer_idx, y1)]
+                    self.edges.append(Edge(node1.x, node1.y, node2.x, node2.y, weight))
 
-    label_x1 = get_x(0) - node_radius - 5
-    label_x2 = get_x(max_layers) + node_radius + 5
-    for label_idx, label in enumerate(labels):
-        y = get_y(neural_net[0].in_features, label_idx)
-        text.append(f'\n\t<text x="{label_x1}" y="{y}" text-anchor="end">{html.escape(label)}</text>')
-        text.append(f'\n\t<text x="{label_x2}" y="{y}">{html.escape(label)}</text>')
+    def add_labels(self):
+        self.add_label_col(0, -self.node_radius - 5, True)
+        self.add_label_col(len(self.neural_net), self.node_radius + 5)
 
-    # Add final layer for outputs
-    add_layer(max_layers, neural_net[-1].out_features)
+    def add_label_col(self, col, offset, align_right = False):
+        attr = 'text-anchor="end"' if align_right else ''
 
-    # Wrap elements in SVG tags
-    svg_code = f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}">'
+        for y, label in enumerate(self.labels):
+            node1 = self.nodes[(col, y)]
+            x = node1.x + offset
+            y = node1.y
 
-    svg_code += STYLES
+            self.text.append(f'\n\t<text x="{x}" y="{y}" {attr}>{html.escape(label)}</text>')
 
-    svg_code += "".join(edges)
-    svg_code += "".join(nodes)
-    svg_code += "".join(text)
-    svg_code += "\n</svg>"
+    def generate_svg(self):
+        # Wrap elements in SVG tags
+        svg_code = f'<svg xmlns="http://www.w3.org/2000/svg" width="{self.width}" height="{self.height}">'
 
-    return svg_code
+        svg_code += STYLES
 
+        svg_code += "".join(f"\n\t{edge}" for edge in self.edges)
+        svg_code += "".join(f"\n\t{node}" for node in self.nodes.values())
+        svg_code += "".join(self.text)
+        svg_code += "\n</svg>"
 
-def write_svg_to_file(svg_code, filename):
-    """
-    Write SVG code to a file.
+        return svg_code
 
-    Args:
-      svg_code (str): SVG code as a string.
-      filename (str): Name of the output file.
-    """
-    with open(filename, "w") as f:
-        f.write(svg_code)
+    def write_to_file(self, filename):
+        """
+        Write SVG code to a file.
+
+        Args:
+        svg_code (str): SVG code as a string.
+        filename (str): Name of the output file.
+        """
+
+        with open(filename, "w") as f:
+            f.write(self.generate_svg())
+
+    def __str__(self):
+        return self.generate_svg()
