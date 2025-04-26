@@ -1,9 +1,10 @@
 import html
+import torch
 import torch.nn.functional as F
 
 STYLES = """
 <style>
-    circle { fill: lightblue; stroke: white; stroke-width: 2; }
+    .node { fill: #ccc; stroke: white; stroke-width: 2; }
     line { stroke-width: 2; }
     text { font-family: sans-serif; font-size: 12px; fill: black; alignment-baseline: middle; }
 </style>\n"""
@@ -14,13 +15,24 @@ class Node:
     A class representing a node in the neural network.
     """
 
-    def __init__(self, x, y, radius):
+    def __init__(self, x, y, radius, activation=0):
         self.x = x
         self.y = y
         self.radius = radius
+        self.activation = activation
 
     def __str__(self):
-        return f'<circle cx="{self.x}" cy="{self.y}" r="{self.radius}" />'
+        if abs(self.activation) < 0.01:
+            return f'<circle  class="node" cx="{self.x}" cy="{self.y}" r="{self.radius}" />'
+
+        active_radius = self.radius * abs(self.activation)
+        colour = "#38f" if self.activation > 0 else "red"
+
+        return f"""<g transform="translate({self.x} {self.y})">
+            <circle class="node" cx="0" cy="0" r="{self.radius}" />
+            <circle cx="0" cy="0" r="{active_radius:.1f}" fill="{colour}" />
+            <text x="0" y="0" text-anchor="middle">{self.activation:.2f}</text>
+        </g>"""
 
 
 class Edge:
@@ -68,7 +80,8 @@ class NeuralNetSVG:
         self.node_spacing = 60
 
         max_nodes = max(max(layer.in_features, layer.out_features) for layer in neural_net)
-        self.width = len(neural_net) * self.layer_spacing + (self.node_radius + self.margin_x) * 2
+        self.n_layers = len(neural_net)
+        self.width = self.n_layers * self.layer_spacing + (self.node_radius + self.margin_x) * 2
         self.height = (max_nodes - 1) * self.node_spacing + (self.node_radius + self.margin_y) * 2
 
         self.add_nodes()
@@ -90,11 +103,11 @@ class NeuralNetSVG:
             self.nodes[node_id] = Node(x, y, self.node_radius)
 
     def add_nodes(self):
-        # Add nodes for inputs
+        # For each set of weights, add the input nodes
         for layer_idx, layer in enumerate(self.neural_net):
             self.add_nodes_in_layer(layer_idx, layer.in_features)
 
-        # Add final layer for outputs
+        # Add final output nodes
         self.add_nodes_in_layer(len(self.neural_net), self.neural_net[-1].out_features)
 
     def add_edges(self):
@@ -125,7 +138,6 @@ class NeuralNetSVG:
     def generate_svg(self):
         # Wrap elements in SVG tags
         svg_code = f'<svg xmlns="http://www.w3.org/2000/svg" width="{self.width}" height="{self.height}">'
-
         svg_code += STYLES
 
         svg_code += "".join(f"\n\t{edge}" for edge in self.edges)
@@ -134,6 +146,26 @@ class NeuralNetSVG:
         svg_code += "\n</svg>"
 
         return svg_code
+
+    def activate(self, activation):
+        """
+        For a given input, activation, calculate the activation of every node in the network.
+        """
+
+        def activate_layer(layer_idx, activation):
+            """ Activate each node in the layer """
+            for node_idx, node_value in enumerate(activation):
+                node_id = (layer_idx, node_idx)
+                self.nodes[node_id].activation = node_value.item()
+
+        for layer_idx, layer in enumerate(self.neural_net):
+            activation_values = activation if layer_idx == 0 else torch.sigmoid(activation)
+            activate_layer(layer_idx, activation_values)
+            # Calulate the activation of the next layer
+            activation = layer(activation)
+
+        # Show the activation of the final layer after softmax
+        activate_layer(self.n_layers, torch.softmax(activation, dim=0))
 
     def write_to_file(self, filename):
         """
