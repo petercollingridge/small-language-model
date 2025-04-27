@@ -7,25 +7,25 @@
 </style>
 
 	<line class="edge" x1="120" y1="30.0" x2="270" y2="120.0" stroke="red" opacity="0.25"/>
-	<line class="edge" x1="120" y1="90.0" x2="270" y2="120.0" stroke="red" opacity="0.17"/>
+	<line class="edge" x1="120" y1="90.0" x2="270" y2="120.0" stroke="red" opacity="0.04"/>
 	<line class="edge" x1="120" y1="150.0" x2="270" y2="120.0" stroke="red" opacity="0.25"/>
 	<line class="edge" x1="120" y1="210.0" x2="270" y2="120.0" stroke="red" opacity="0.25"/>
 	<line class="edge" x1="120" y1="270.0" x2="270" y2="120.0" stroke="red" opacity="0.25"/>
 	<line class="edge" x1="120" y1="30.0" x2="270" y2="180.0" stroke="red" opacity="0.25"/>
-	<line class="edge" x1="120" y1="90.0" x2="270" y2="180.0" stroke="blue" opacity="0.62"/>
+	<line class="edge" x1="120" y1="90.0" x2="270" y2="180.0" stroke="red" opacity="0.05"/>
 	<line class="edge" x1="120" y1="150.0" x2="270" y2="180.0" stroke="red" opacity="0.25"/>
 	<line class="edge" x1="120" y1="210.0" x2="270" y2="180.0" stroke="red" opacity="0.25"/>
 	<line class="edge" x1="120" y1="270.0" x2="270" y2="180.0" stroke="red" opacity="0.25"/>
-	<line class="edge" x1="270" y1="120.0" x2="420" y2="30.0" stroke="red" opacity="0.16"/>
-	<line class="edge" x1="270" y1="180.0" x2="420" y2="30.0" stroke="blue" opacity="0.44"/>
-	<line class="edge" x1="270" y1="120.0" x2="420" y2="90.0" stroke="red" opacity="0.17"/>
-	<line class="edge" x1="270" y1="180.0" x2="420" y2="90.0" stroke="red" opacity="0.12"/>
-	<line class="edge" x1="270" y1="120.0" x2="420" y2="150.0" stroke="red" opacity="0.25"/>
-	<line class="edge" x1="270" y1="180.0" x2="420" y2="150.0" stroke="blue" opacity="0.55"/>
-	<line class="edge" x1="270" y1="120.0" x2="420" y2="210.0" stroke="red" opacity="0.22"/>
-	<line class="edge" x1="270" y1="180.0" x2="420" y2="210.0" stroke="blue" opacity="0.50"/>
-	<line class="edge" x1="270" y1="120.0" x2="420" y2="270.0" stroke="blue" opacity="0.41"/>
-	<line class="edge" x1="270" y1="180.0" x2="420" y2="270.0" stroke="red" opacity="0.19"/>
+	<line class="edge" x1="270" y1="120.0" x2="420" y2="30.0" stroke="blue" opacity="0.30"/>
+	<line class="edge" x1="270" y1="180.0" x2="420" y2="30.0" stroke="red" opacity="0.20"/>
+	<line class="edge" x1="270" y1="120.0" x2="420" y2="90.0" stroke="blue" opacity="0.29"/>
+	<line class="edge" x1="270" y1="180.0" x2="420" y2="90.0" stroke="blue" opacity="0.34"/>
+	<line class="edge" x1="270" y1="120.0" x2="420" y2="150.0" stroke="red" opacity="0.16"/>
+	<line class="edge" x1="270" y1="180.0" x2="420" y2="150.0" stroke="red" opacity="0.17"/>
+	<line class="edge" x1="270" y1="120.0" x2="420" y2="210.0" stroke="red" opacity="0.16"/>
+	<line class="edge" x1="270" y1="180.0" x2="420" y2="210.0" stroke="red" opacity="0.17"/>
+	<line class="edge" x1="270" y1="120.0" x2="420" y2="270.0" stroke="red" opacity="0.21"/>
+	<line class="edge" x1="270" y1="180.0" x2="420" y2="270.0" stroke="red" opacity="0.23"/>
 	<circle  class="node" cx="120" cy="30.0" r="20" />
 	<g transform="translate(120 90.0)">
             <circle class="node" cx="0" cy="0" r="20" />
@@ -37,38 +37,34 @@
 	<circle  class="node" cx="120" cy="270.0" r="20" />
 	<g transform="translate(270 120.0)">
             <circle class="node" cx="0" cy="0" r="20" />
-            <circle class="node-activation" cx="0" cy="0" r="8.2" fill="#48f" />
-            <text x="0" y="0" text-anchor="middle">0.41</text>
+            <circle class="node-activation" cx="0" cy="0" r="5.2" fill="#48f" />
+            <text x="0" y="0" text-anchor="middle">0.26</text>
         </g>
 	<g transform="translate(270 180.0)">
             <circle class="node" cx="0" cy="0" r="20" />
-            <circle class="node-activation" cx="0" cy="0" r="15.2" fill="#48f" />
-            <text x="0" y="0" text-anchor="middle">0.76</text>
+            <circle class="node-activation" cx="0" cy="0" r="4.6" fill="#48f" />
+            <text x="0" y="0" text-anchor="middle">0.23</text>
         </g>
 	<g transform="translate(420 30.0)">
             <circle class="node" cx="0" cy="0" r="20" />
-            <circle class="node-activation" cx="0" cy="0" r="7.1" fill="#48f" />
-            <text x="0" y="0" text-anchor="middle">0.35</text>
-        </g>
-	<g transform="translate(420 90.0)">
-            <circle class="node" cx="0" cy="0" r="20" />
-            <circle class="node-activation" cx="0" cy="0" r="0.5" fill="#48f" />
+            <circle class="node-activation" cx="0" cy="0" r="0.6" fill="#48f" />
             <text x="0" y="0" text-anchor="middle">0.03</text>
         </g>
+	<circle  class="node" cx="420" cy="90.0" r="20" />
 	<g transform="translate(420 150.0)">
             <circle class="node" cx="0" cy="0" r="20" />
-            <circle class="node-activation" cx="0" cy="0" r="6.4" fill="#48f" />
-            <text x="0" y="0" text-anchor="middle">0.32</text>
+            <circle class="node-activation" cx="0" cy="0" r="7.7" fill="#48f" />
+            <text x="0" y="0" text-anchor="middle">0.38</text>
         </g>
 	<g transform="translate(420 210.0)">
             <circle class="node" cx="0" cy="0" r="20" />
-            <circle class="node-activation" cx="0" cy="0" r="5.4" fill="#48f" />
-            <text x="0" y="0" text-anchor="middle">0.27</text>
+            <circle class="node-activation" cx="0" cy="0" r="7.6" fill="#48f" />
+            <text x="0" y="0" text-anchor="middle">0.38</text>
         </g>
 	<g transform="translate(420 270.0)">
             <circle class="node" cx="0" cy="0" r="20" />
-            <circle class="node-activation" cx="0" cy="0" r="0.5" fill="#48f" />
-            <text x="0" y="0" text-anchor="middle">0.02</text>
+            <circle class="node-activation" cx="0" cy="0" r="4.0" fill="#48f" />
+            <text x="0" y="0" text-anchor="middle">0.20</text>
         </g>
 	<text x="95" y="30.0" text-anchor="end">&lt;&gt;</text>
 	<text x="95" y="90.0" text-anchor="end">are</text>

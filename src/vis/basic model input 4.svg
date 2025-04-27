@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="540" height="300">
+<style>
+    .node { fill: #ccc; stroke: white; stroke-width: 2; }
+    .node-activation { stroke: white; stroke-width: 0.5; }
+    .edge { stroke-width: 2; }
+    text { font-family: sans-serif; font-size: 12px; fill: black; alignment-baseline: middle; }
+</style>
+
+	<line class="edge" x1="120" y1="30.0" x2="270" y2="120.0" stroke="red" opacity="0.25"/>
+	<line class="edge" x1="120" y1="90.0" x2="270" y2="120.0" stroke="red" opacity="0.25"/>
+	<line class="edge" x1="120" y1="150.0" x2="270" y2="120.0" stroke="red" opacity="0.25"/>
+	<line class="edge" x1="120" y1="210.0" x2="270" y2="120.0" stroke="red" opacity="0.25"/>
+	<line class="edge" x1="120" y1="270.0" x2="270" y2="120.0" stroke="blue" opacity="0.63"/>
+	<line class="edge" x1="120" y1="30.0" x2="270" y2="180.0" stroke="red" opacity="0.25"/>
+	<line class="edge" x1="120" y1="90.0" x2="270" y2="180.0" stroke="red" opacity="0.25"/>
+	<line class="edge" x1="120" y1="150.0" x2="270" y2="180.0" stroke="red" opacity="0.25"/>
+	<line class="edge" x1="120" y1="210.0" x2="270" y2="180.0" stroke="red" opacity="0.25"/>
+	<line class="edge" x1="120" y1="270.0" x2="270" y2="180.0" stroke="blue" opacity="0.53"/>
+	<line class="edge" x1="270" y1="120.0" x2="420" y2="30.0" stroke="blue" opacity="0.43"/>
+	<line class="edge" x1="270" y1="180.0" x2="420" y2="30.0" stroke="red" opacity="0.11"/>
+	<line class="edge" x1="270" y1="120.0" x2="420" y2="90.0" stroke="blue" opacity="0.40"/>
+	<line class="edge" x1="270" y1="180.0" x2="420" y2="90.0" stroke="blue" opacity="0.54"/>
+	<line class="edge" x1="270" y1="120.0" x2="420" y2="150.0" stroke="red" opacity="0.04"/>
+	<line class="edge" x1="270" y1="180.0" x2="420" y2="150.0" stroke="red" opacity="0.05"/>
+	<line class="edge" x1="270" y1="120.0" x2="420" y2="210.0" stroke="red" opacity="0.05"/>
+	<line class="edge" x1="270" y1="180.0" x2="420" y2="210.0" stroke="red" opacity="0.07"/>
+	<line class="edge" x1="270" y1="120.0" x2="420" y2="270.0" stroke="red" opacity="0.13"/>
+	<line class="edge" x1="270" y1="180.0" x2="420" y2="270.0" stroke="red" opacity="0.18"/>
+	<circle  class="node" cx="120" cy="30.0" r="20" />
+	<circle  class="node" cx="120" cy="90.0" r="20" />
+	<circle  class="node" cx="120" cy="150.0" r="20" />
+	<circle  class="node" cx="120" cy="210.0" r="20" />
+	<g transform="translate(120 270.0)">
+            <circle class="node" cx="0" cy="0" r="20" />
+            <circle class="node-activation" cx="0" cy="0" r="20.0" fill="#48f" />
+            <text x="0" y="0" text-anchor="middle">1.00</text>
+        </g>
+	<g transform="translate(270 120.0)">
+            <circle class="node" cx="0" cy="0" r="20" />
+            <circle class="node-activation" cx="0" cy="0" r="16.8" fill="#48f" />
+            <text x="0" y="0" text-anchor="middle">0.84</text>
+        </g>
+	<g transform="translate(270 180.0)">
+            <circle class="node" cx="0" cy="0" r="20" />
+            <circle class="node-activation" cx="0" cy="0" r="14.6" fill="#48f" />
+            <text x="0" y="0" text-anchor="middle">0.73</text>
+        </g>
+	<g transform="translate(420 30.0)">
+            <circle class="node" cx="0" cy="0" r="20" />
+            <circle class="node-activation" cx="0" cy="0" r="1.7" fill="#48f" />
+            <text x="0" y="0" text-anchor="middle">0.09</text>
+        </g>
+	<g transform="translate(420 90.0)">
+            <circle class="node" cx="0" cy="0" r="20" />
+            <circle class="node-activation" cx="0" cy="0" r="17.6" fill="#48f" />
+            <text x="0" y="0" text-anchor="middle">0.88</text>
+        </g>
+	<circle  class="node" cx="420" cy="150.0" r="20" />
+	<circle  class="node" cx="420" cy="210.0" r="20" />
+	<g transform="translate(420 270.0)">
+            <circle class="node" cx="0" cy="0" r="20" />
+            <circle class="node-activation" cx="0" cy="0" r="0.6" fill="#48f" />
+            <text x="0" y="0" text-anchor="middle">0.03</text>
+        </g>
+	<text x="95" y="30.0" text-anchor="end">&lt;&gt;</text>
+	<text x="95" y="90.0" text-anchor="end">are</text>
+	<text x="95" y="150.0" text-anchor="end">herbivores</text>
+	<text x="95" y="210.0" text-anchor="end">meek</text>
+	<text x="95" y="270.0" text-anchor="end">sheep</text>
+	<text x="445" y="30.0" >&lt;&gt;</text>
+	<text x="445" y="90.0" >are</text>
+	<text x="445" y="150.0" >herbivores</text>
+	<text x="445" y="210.0" >meek</text>
+	<text x="445" y="270.0" >sheep</text>
+</svg>

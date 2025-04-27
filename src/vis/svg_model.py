@@ -5,7 +5,8 @@ import torch.nn.functional as F
 STYLES = """
 <style>
     .node { fill: #ccc; stroke: white; stroke-width: 2; }
-    line { stroke-width: 2; }
+    .node-activation { stroke: white; stroke-width: 0.5; }
+    .edge { stroke-width: 2; }
     text { font-family: sans-serif; font-size: 12px; fill: black; alignment-baseline: middle; }
 </style>\n"""
 
@@ -20,17 +21,26 @@ class Node:
         self.y = y
         self.radius = radius
         self.activation = activation
+        self.out_edges = []
+
+    def activate(self, activation):
+        """
+        Set the activation of the node.
+        """
+        self.activation = activation
+        for edge in self.out_edges:
+            edge.weight = activation * edge.weight
 
     def __str__(self):
         if abs(self.activation) < 0.01:
             return f'<circle  class="node" cx="{self.x}" cy="{self.y}" r="{self.radius}" />'
 
         active_radius = self.radius * abs(self.activation)
-        colour = "#38f" if self.activation > 0 else "red"
+        colour = "#48f" if self.activation > 0 else "red"
 
         return f"""<g transform="translate({self.x} {self.y})">
             <circle class="node" cx="0" cy="0" r="{self.radius}" />
-            <circle cx="0" cy="0" r="{active_radius:.1f}" fill="{colour}" />
+            <circle class="node-activation" cx="0" cy="0" r="{active_radius:.1f}" fill="{colour}" />
             <text x="0" y="0" text-anchor="middle">{self.activation:.2f}</text>
         </g>"""
 
@@ -58,7 +68,7 @@ class Edge:
     def __str__(self):
         attr = self.get_attributes()
         attr_string = " ".join(f'{key}="{value}"' for key, value in attr.items())
-        return f'<line x1="{self.x1}" y1="{self.y1}" x2="{self.x2}" y2="{self.y2}" {attr_string}/>'
+        return f'<line class="edge" x1="{self.x1}" y1="{self.y1}" x2="{self.x2}" y2="{self.y2}" {attr_string}/>'
 
 
 class NeuralNetSVG:
@@ -119,7 +129,9 @@ class NeuralNetSVG:
 
                 for y1, weight in enumerate(col2):
                     node1 = self.nodes[(layer_idx, y1)]
-                    self.edges.append(Edge(node1.x, node1.y, node2.x, node2.y, weight))
+                    edge = Edge(node1.x, node1.y, node2.x, node2.y, weight)
+                    node1.out_edges.append(edge)
+                    self.edges.append(edge)
 
     def add_labels(self):
         self.add_label_col(0, -self.node_radius - 5, True)
@@ -156,7 +168,7 @@ class NeuralNetSVG:
             """ Activate each node in the layer """
             for node_idx, node_value in enumerate(activation):
                 node_id = (layer_idx, node_idx)
-                self.nodes[node_id].activation = node_value.item()
+                self.nodes[node_id].activate(node_value.item())
 
         for layer_idx, layer in enumerate(self.neural_net):
             activation_values = activation if layer_idx == 0 else torch.sigmoid(activation)
