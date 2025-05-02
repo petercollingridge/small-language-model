@@ -26,7 +26,7 @@ SCRIPT = """
 	};
 
 	clickBoxes.forEach((box, index) => {
-		box.addEventListener('click', () => {
+		const handleEvent = () => {
 			if (selectedBox === -1) {
 				selectBox(index);
 			} else if (selectedBox === index) {
@@ -39,7 +39,12 @@ SCRIPT = """
 				activations[selectedBox].style.display = 'none';
 				selectBox(index);
 			}
+		};
 
+		box.addEventListener('click', handleEvent);
+		box.addEventListener('touchstart', (e) => {
+			e.preventDefault(); // Prevents touch from triggering click
+			handleEvent();
 		});
 	});
 </script>"""
