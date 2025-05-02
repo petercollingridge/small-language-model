@@ -28,17 +28,17 @@ input_vectors, output_vectors = get_word_pair_vectors(sentence_tokens, encode_wo
 # print(input_vectors)
 # print(output_vectors)
 
-model = train_simple_model(input_vectors, output_vectors, hidden_size = 2, loop_n=10000)
+model = train_simple_model(input_vectors, output_vectors, hidden_size = 2, loop_n=100000)
 
 test_inputs = torch.eye(len(vocab))
 
-for idx, test_input, in enumerate(test_inputs):
-    filename = os.path.join('src', 'vis',f'basic model input {idx}.svg')
+# for idx, test_input, in enumerate(test_inputs):
+#     filename = os.path.join('src', 'vis',f'basic model input {idx}.svg')
 
-    model_svg = NeuralNetSVG(model, labels=vocab)
-    model_svg.activate(test_input)
-    model_svg.write_to_file(filename)
+#     model_svg = NeuralNetSVG(model, labels=vocab)
+#     model_svg.activate(test_input)
+#     model_svg.write_to_file(filename)
 
-# filename = os.path.join('src', 'vis','basic model activation.svg')
-# model_svg = NeuralNetActivationSVG(model, activation, labels=vocab)
-# model_svg.write_to_file(filename)
+filename = os.path.join('src', 'vis','basic model activation.svg')
+model_svg = NeuralNetSVG(model, labels=vocab)
+model_svg.write_to_file(filename, test_inputs)

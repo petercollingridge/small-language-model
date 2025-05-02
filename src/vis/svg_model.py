@@ -4,11 +4,60 @@ import torch.nn.functional as F
 
 STYLES = """
 <style>
+    .activation { display: none; pointer-events: none; }
+    .click-box {fill-opacity: 0;}
+    .edge { stroke-width: 2; }
     .node { fill: #ccc; stroke: white; stroke-width: 2; }
     .node-activation { stroke: white; stroke-width: 0.5; }
-    .edge { stroke-width: 2; }
     text { font-family: sans-serif; font-size: 12px; fill: black; alignment-baseline: middle; }
 </style>\n"""
+
+SCRIPT = """
+<script>
+	const clickBoxes = document.querySelectorAll('.click-box');
+	const activations = document.querySelectorAll('.activation');
+	const weights = document.querySelector('.weights');
+	let selectedBox = -1;
+
+	const selectBox = (i) => {
+		selectedBox = i;
+		activations[i].style.display = 'block';
+		weights.style.display = 'none';
+	};
+
+	clickBoxes.forEach((box, index) => {
+		box.addEventListener('click', () => {
+			if (selectedBox === -1) {
+				selectBox(index);
+			} else if (selectedBox === index) {
+				// Deselect the already selected box
+				activations[index].style.display = 'none';
+				weights.style.display = 'block';
+				selectedBox = -1;
+			} else {
+				// Deselect the previously selected box and select the new one
+				activations[selectedBox].style.display = 'none';
+				selectBox(index);
+			}
+
+		});
+	});
+</script>"""
+
+def get_attribute_string(attrs):
+    """
+    Convert a dictionary of attributes to a string.
+    """
+    return " ".join(f'{key}="{value}"' for key, value in attrs.items())
+
+
+def wrap_in_group(string, attrs=None):
+    """
+    Wrap a string in a <g> tag.
+    """
+
+    attr_string = "" if attrs is None else  get_attribute_string(attrs)
+    return f'<g {attr_string}>{string}\n</g>'
 
 
 class Node:
@@ -29,20 +78,21 @@ class Node:
         """
         self.activation = activation
         for edge in self.out_edges:
-            edge.weight = activation * edge.weight
+            edge.activation = activation * edge.weight
 
     def __str__(self):
         if abs(self.activation) < 0.01:
-            return f'<circle  class="node" cx="{self.x}" cy="{self.y}" r="{self.radius}" />'
+            return f'<circle class="node" cx="{self.x}" cy="{self.y}" r="{self.radius}" />'
 
         active_radius = self.radius * abs(self.activation)
         colour = "#48f" if self.activation > 0 else "red"
 
-        return f"""<g transform="translate({self.x} {self.y})">
+        contents = f"""
             <circle class="node" cx="0" cy="0" r="{self.radius}" />
             <circle class="node-activation" cx="0" cy="0" r="{active_radius:.1f}" fill="{colour}" />
-            <text x="0" y="0" text-anchor="middle">{self.activation:.2f}</text>
-        </g>"""
+            <text x="0" y="0" text-anchor="middle">{self.activation:.2f}</text>"""
+
+        return wrap_in_group(contents, {"transform": f"translate({self.x} {self.y})"})
 
 
 class Edge:
@@ -56,10 +106,13 @@ class Edge:
         self.x2 = x2
         self.y2 = y2
         self.weight = weight
+        self.activation = None
 
     def get_attributes(self):
-        opacity = F.sigmoid(self.weight).item() ** 2
-        colour = "blue" if self.weight.item() > 0 else "red"
+        value = self.weight if self.activation is None else self.activation
+        value = torch.tanh(value).item()
+        opacity = abs(value)
+        colour = "blue" if value > 0 else "red"
         return {
             "stroke": colour,
             "opacity": f"{opacity:.2f}"
@@ -67,7 +120,11 @@ class Edge:
 
     def __str__(self):
         attr = self.get_attributes()
-        attr_string = " ".join(f'{key}="{value}"' for key, value in attr.items())
+
+        if attr["opacity"] == "0.00":
+            return ""
+
+        attr_string = get_attribute_string(attr)
         return f'<line class="edge" x1="{self.x1}" y1="{self.y1}" x2="{self.x2}" y2="{self.y2}" {attr_string}/>'
 
 
@@ -98,7 +155,7 @@ class NeuralNetSVG:
         self.add_edges()
         self.add_labels()
 
-    def get_x(self, layer_idx): 
+    def get_x(self, layer_idx):
         return self.margin_x + self.node_radius + layer_idx * self.layer_spacing
 
     def get_y(self, layer_size, node_idx):
@@ -147,17 +204,64 @@ class NeuralNetSVG:
 
             self.text.append(f'\n\t<text x="{x}" y="{y}" {attr}>{html.escape(label)}</text>')
 
+    def add_selection_trigger(self, activations):
+        """
+        Add a rect to capture the a click event to show the  activation of the node.
+        """
+
+        width = self.node_radius * 2 + 60
+        height = self.node_radius * 2
+        x = self.get_x(0) - width + self.node_radius
+        attrs = {'x': x, 'width': width, 'height': height}
+
+        svg_code = ''
+        n = len(activations)
+
+        for i in range(n):
+            attrs['y'] = self.get_y(n, i) - self.node_radius
+            svg_code += f'\n\t<rect id="click-box-{i}" class="click-box" {get_attribute_string(attrs)} />'
+
+        return svg_code
+
     def generate_svg(self):
         # Wrap elements in SVG tags
         svg_code = f'<svg xmlns="http://www.w3.org/2000/svg" width="{self.width}" height="{self.height}">'
         svg_code += STYLES
 
-        svg_code += "".join(f"\n\t{edge}" for edge in self.edges)
+        svg_code += "".join(f"\n\t{edge}" for edge in self.edges if edge)
         svg_code += "".join(f"\n\t{node}" for node in self.nodes.values())
         svg_code += "".join(self.text)
         svg_code += "\n</svg>"
 
         return svg_code
+
+    def generate_activation_svg(self, activations):
+        """ Given a list of activations, generate the SVG code that allows each to be show. """
+
+        # Wrap elements in SVG tags
+        svg_code = f'<svg xmlns="http://www.w3.org/2000/svg" width="{self.width}" height="{self.height}">'
+        svg_code += STYLES
+
+        edge_code = "".join(f"\n\t{edge}" for edge in self.edges)
+        svg_code += wrap_in_group(edge_code, { 'class': 'weights'})
+
+        svg_code += "".join(f"\n\t{node}" for node in self.nodes.values())
+        svg_code += "".join(self.text)
+
+        svg_code += self.add_selection_trigger(activations)
+
+        for idx, activation in enumerate(activations):
+            self.activate(activation)
+            activation_code = "".join(f"\n\t{edge}" for edge in self.edges if f"{edge}")
+            activation_code += "".join(f"\n\t{node}" for node in self.nodes.values())
+            attrs = { 'id': f'activation-{idx}', 'class': 'activation'}
+            svg_code += wrap_in_group(activation_code, attrs)
+
+        svg_code += SCRIPT
+        svg_code += "\n</svg>"
+
+        return svg_code
+
 
     def activate(self, activation):
         """
@@ -179,7 +283,7 @@ class NeuralNetSVG:
         # Show the activation of the final layer after softmax
         activate_layer(self.n_layers, torch.softmax(activation, dim=0))
 
-    def write_to_file(self, filename):
+    def write_to_file(self, filename, activations=None):
         """
         Write SVG code to a file.
 
@@ -189,7 +293,10 @@ class NeuralNetSVG:
         """
 
         with open(filename, "w") as f:
-            f.write(self.generate_svg())
+            if activations is not None:
+                f.write(self.generate_activation_svg(activations))
+            else:
+                f.write(self.generate_svg())
 
     def __str__(self):
         return self.generate_svg()
