@@ -15,6 +15,9 @@ from vis.svg_model import NeuralNetSVG
 sentences = [
     "sheep are meek",
     "sheep are herbivores",
+    # "rabbits are herbivores",
+    "sheep eat grass",
+    "sheep like jumping",
 ]
 
 sentence_tokens = [tokenise_sentence(sentence) for sentence in sentences]
@@ -30,15 +33,10 @@ input_vectors, output_vectors = get_word_pair_vectors(sentence_tokens, encode_wo
 
 model = train_simple_model(input_vectors, output_vectors, hidden_size = 2, loop_n=100000)
 
+for layer in model:
+    print(layer.weight.data)
+
 test_inputs = torch.eye(len(vocab))
-
-# for idx, test_input, in enumerate(test_inputs):
-#     filename = os.path.join('src', 'vis',f'basic model input {idx}.svg')
-
-#     model_svg = NeuralNetSVG(model, labels=vocab)
-#     model_svg.activate(test_input)
-#     model_svg.write_to_file(filename)
-
-filename = os.path.join('src', 'vis','basic model activation.svg')
+filename = os.path.join('src', 'vis','example_1b.svg')
 model_svg = NeuralNetSVG(model, labels=vocab)
 model_svg.write_to_file(filename, test_inputs)

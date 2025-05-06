@@ -2,6 +2,8 @@ import html
 import torch
 import torch.nn.functional as F
 
+from .utils import get_attribute_string, wrap_in_group
+
 STYLES = """
 <style>
     .activation { display: none; pointer-events: none; }
@@ -48,21 +50,6 @@ SCRIPT = """
 		});
 	});
 </script>"""
-
-def get_attribute_string(attrs):
-    """
-    Convert a dictionary of attributes to a string.
-    """
-    return " ".join(f'{key}="{value}"' for key, value in attrs.items())
-
-
-def wrap_in_group(string, attrs=None):
-    """
-    Wrap a string in a <g> tag.
-    """
-
-    attr_string = "" if attrs is None else  get_attribute_string(attrs)
-    return f'<g {attr_string}>{string}\n</g>'
 
 
 class Node:
@@ -266,7 +253,6 @@ class NeuralNetSVG:
         svg_code += "\n</svg>"
 
         return svg_code
-
 
     def activate(self, activation):
         """
