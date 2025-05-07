@@ -8,6 +8,7 @@ from utils.text import (
     get_hot_one_encoding,
     get_word_pair_vectors,
     get_vocab_list,
+    output_transition_probabilities,
     tokenise_sentence,
 )
 from vis.svg_model import NeuralNetSVG
@@ -36,19 +37,9 @@ def build_model(sentences, loop_n=100000):
 
 model, vocab = build_model(sentences, loop_n=30000)
 
-# for layer in model:
-#     print(layer.weight.data)
-
 test_inputs = torch.eye(len(vocab))
 test_outputs = run_model(model, test_inputs)
-
-for i, input_word in enumerate(vocab):
-    output_distribution = {
-        vocab[j]: probability for j, probability in enumerate(test_outputs[i])
-        if probability > 0
-    }
-    # Print the word and its corresponding output
-    print(f"{input_word}: {output_distribution}")
+output_transition_probabilities(vocab, test_outputs)
 
 # filename = os.path.join('src', 'vis','example_1b.svg')
 # model_svg = NeuralNetSVG(model, labels=vocab)

@@ -65,6 +65,20 @@ def get_word_pair_vectors(sentences, encode_word):
     return torch.stack(input_vectors), torch.stack(output_vectors)
 
 
+def output_transition_probabilities(vocab, test_outputs):
+    """ Print out a dictionary of transition probabilities calculated from a model. """
+
+    print("transitions = {")
+    for i, input_word in enumerate(vocab):
+        output_distribution = {
+            vocab[j]: probability for j, probability in enumerate(test_outputs[i])
+            if probability > 0
+        }
+        # Print the word and its corresponding output
+        print(f"    {input_word}': {output_distribution},")
+    print("}")
+
+
 def tokenise_sentence(sentence):
     """ Split a string into a list of tokens. """
     return f"<> {sentence} <>".split(" ")

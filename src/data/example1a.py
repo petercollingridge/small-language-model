@@ -12,8 +12,9 @@ embedding = [
 
 transitions = {
     '<>': {'sheep': 1.0},
-    'are': {'herbivores': 0.49998927, 'meek': 0.5000107},
+    'are': {'herbivores': 0.5, 'meek': 0.5},
     'herbivores': {'<>': 1.0},
     'meek': {'<>': 1.0},
     'sheep': {'are': 1.0},
 }
+
