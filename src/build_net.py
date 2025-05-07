@@ -12,7 +12,7 @@ from utils.text import (
     tokenise_sentence,
 )
 from vis.svg_model import NeuralNetSVG
-from data.example1a import sentences
+from data.example1b import sentences
 
 def build_model(sentences, loop_n=100000):
     """

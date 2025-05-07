@@ -17,4 +17,3 @@ transitions = {
     'meek': {'<>': 1.0},
     'sheep': {'are': 1.0},
 }
-

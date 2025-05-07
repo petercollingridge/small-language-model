@@ -75,7 +75,7 @@ def output_transition_probabilities(vocab, test_outputs):
             if probability > 0
         }
         # Print the word and its corresponding output
-        print(f"    {input_word}': {output_distribution},")
+        print(f"    '{input_word}': {output_distribution},")
     print("}")
 
 
