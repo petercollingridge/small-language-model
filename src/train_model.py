@@ -1,8 +1,10 @@
 """ Start testing with a simple example of two, very similar sentences. """
 
 import os
+import sys
 import torch
 
+from utils.io import get_sentences
 from utils.neural_net import train_simple_model, run_model
 from utils.text import (
     get_hot_one_encoding,
@@ -10,16 +12,6 @@ from utils.text import (
     get_vocab_list,
     tokenise_sentence,
 )
-from vis.svg_model import NeuralNetSVG
-
-
-def get_sentences(folder):
-    """ Load sentences from a text file in the given folder. """
-
-    sentences_file = os.path.join(folder, 'sentences.txt')
-    with open(sentences_file, 'r', encoding='utf-8') as f:
-        sentences = [line.strip() for line in f if line.strip()]
-    return sentences
 
 
 def build_model(sentences, token_list, loop_n=100000):
@@ -41,12 +33,11 @@ def build_model(sentences, token_list, loop_n=100000):
     return model
 
 
-def save_model(model, folder, filename = "model.pt"):
+def save_model(filepath, model):
     """
     Save the trained model to a file.
     """
 
-    filepath = os.path.join(folder, filename)
     print(f"Saving model to {filepath}...")
     torch.save(model.state_dict(), filepath)
 
@@ -116,17 +107,6 @@ def save_transition_probabilities(filepath, token_list, model):
         f.write("\n}\n")
 
 
-def draw_neural_net_svg(model, token_list, folder, filename='neural_net.svg'):
-    """
-    Draw an SVG representation of the neural network model.
-    """
-
-    filepath = os.path.join(folder, filename)
-    test_inputs = torch.eye(len(token_list))
-    model_svg = NeuralNetSVG(model, labels=token_list)
-    model_svg.write_to_file(filepath, test_inputs)
-
-
 def main(folder):
     """
     Get sentences from the given folder, build and train a model,
@@ -138,9 +118,12 @@ def main(folder):
     sentences_as_tokens = [tokenise_sentence(sentence) for sentence in sentences]
     token_list = get_vocab_list(sentences_as_tokens)
 
-    model = build_model(sentences_as_tokens, token_list, loop_n=10000)
-    # save_model(model, folder)
+    # Build and save model
+    model_file = os.path.join(folder, 'model.pt')
+    model = build_model(sentences_as_tokens, token_list, loop_n=100000)
+    save_model(model_file, model)
 
+    # Save model data to a Python file
     save_file = os.path.join(folder, 'model_data.py')
     # Clear the file if it already exists
     open(save_file, 'w', encoding='utf-8').close()
@@ -149,10 +132,9 @@ def main(folder):
     save_token_embeddings(save_file, token_list, model)
     save_transition_probabilities(save_file, token_list, model)
 
-    # Generate SVGs
-    draw_neural_net_svg(model, token_list, folder)
-
 
 if __name__ == "__main__":
-    FOLDER = 'example-1'
-    main(FOLDER)
+    if len(sys.argv) > 1:
+        main(sys.argv[1])
+    else:
+        main('example1')

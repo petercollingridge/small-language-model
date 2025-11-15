@@ -5,6 +5,29 @@ import torch.nn.functional as F
 from torch import nn
 
 
+def get_model(input_size, hidden_size, output_size):
+    """ Create a simple neural network model. """
+
+    model = nn.Sequential(
+        nn.Linear(input_size, hidden_size),
+        nn.Linear(hidden_size, output_size),
+    )
+    return model
+
+
+def load_model(filepath):
+    """
+    Load a trained model from a file.
+    """
+
+    print(f"Loading model from {filepath}...")
+    model_state = torch.load(filepath)
+
+    print(model_state)
+
+    return model_state
+
+
 def train_simple_model(input_vectors, output_vectors, hidden_size = 2, loop_n=10000):
     """ Train a simple model with a single hidden layer. """
 
@@ -16,10 +39,7 @@ def train_simple_model(input_vectors, output_vectors, hidden_size = 2, loop_n=10
     output_size = len(output_vectors[0])
 
     # Build the model
-    model = nn.Sequential(
-        nn.Linear(input_size, hidden_size),
-        nn.Linear(hidden_size, output_size),
-    )
+    model = get_model(input_size, hidden_size, output_size)
 
     # In Pytorch, Softmax is already added when using CrossEntropyLoss
     loss_fn = torch.nn.CrossEntropyLoss()
