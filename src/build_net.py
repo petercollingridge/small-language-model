@@ -3,6 +3,8 @@
 import os
 import torch
 
+from data.example1a import sentences
+
 from utils.neural_net import train_simple_model, run_model
 from utils.text import (
     get_hot_one_encoding,
@@ -12,7 +14,6 @@ from utils.text import (
     tokenise_sentence,
 )
 from vis.svg_model import NeuralNetSVG
-from data.example1b import sentences
 
 def build_model(sentences, loop_n=100000):
     """
@@ -35,12 +36,21 @@ def build_model(sentences, loop_n=100000):
 
     return model, vocab
 
-model, vocab = build_model(sentences, loop_n=30000)
 
-test_inputs = torch.eye(len(vocab))
-test_outputs = run_model(model, test_inputs)
-output_transition_probabilities(vocab, test_outputs)
+def main():
+    model, vocab = build_model(sentences, loop_n=100000)
 
-# filename = os.path.join('src', 'vis','example_1b.svg')
-# model_svg = NeuralNetSVG(model, labels=vocab)
-# model_svg.write_to_file(filename, test_inputs)
+    for name, param in model.named_parameters():
+        print(f"{name}: {param.data}")
+
+    # test_inputs = torch.eye(len(vocab))
+    # test_outputs = run_model(model, test_inputs)
+    # output_transition_probabilities(vocab, test_outputs)
+
+    # filename = os.path.join('src', 'vis','example_1b.svg')
+    # model_svg = NeuralNetSVG(model, labels=vocab)
+    # model_svg.write_to_file(filename, test_inputs)
+
+
+if __name__ == "__main__":
+    main()

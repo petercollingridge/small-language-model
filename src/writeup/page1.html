@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building a Neural Network from Scratch - Small Language Model Blog</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container article-page">
+        <header>
+            <h1>Basic Neural Network</h1>
+        </header>
+
+        <nav class="breadcrumb">
+            <a href="index.html">← Back to Blog</a> / Basic Neural Network
+        </nav>
+
+        <article class="article">
+            <div class="article-meta">
+                Published on October 3, 2025 • By Peter Collingridge
+            </div>
+
+            <h1 class="article-title">Basic Neural Network</h1>
+
+            <div class="article-content">
+                <p>
+                  In these articles I'm going to work through building a AI model to generate sentences in a similar way to large language models (LLMs).
+                  Mine will be a lot smaller and simpler, so I'm calling it a small language model.
+                  I hope that by keeping it simple it will be easier to understand how exactly LLMs work in principle.
+                </p>
+
+                <p>
+                  One way I'm going keep things simple is by using a stripped down version of English.
+                  I want to imagine some primitive cave people trying to describe their world, and creating an
+                  AI that learns to use their language.
+                  The language will use English words, but only a very small vocabulary and simple sentence structures.
+                </p>
+
+                <div class="highlight-box">
+                    <strong>What you'll learn:</strong> Forward propagation, backpropagation, gradient descent, activation functions, and training loops
+                </div>
+
+                <h2>Starting sentences</h2>
+
+                <p>
+                  In the beginning, our cave people look out at the world and see some sheep.
+                  They are able to describe them with two sentences.
+                  These are the only possible sentences they can say.
+                </p>
+
+                <ul>
+                  <li>Sheep are herbivores</li>
+                  <li>Sheep are wooly</li>
+                </ul>
+                
+                <p>
+                  Don't worry that 'herbivores' and 'wooly' are not particularly simple words; the actual words don't matter.
+                  The point is there are only two possible sentences, and they have simple Noun - Verb - Adjective structure.
+                  Can we make an AI that learns to generate these sentences?
+                </p>
+
+                <h2>Tokenisation</h2>
+
+                <p>
+                  In order to generate a sentence, we will create an neural network that learns to predict the next word in a sentence.
+                  The first step is to split the sentences into individual words.
+                </p>
+
+                <div class="note-box">
+                  In a real LLM, words get broken down into smaller tokens.
+                  For example, 'wooly' might be split into two tokens 'wool', and 'y', allowing the LLM to more easily understand that 'wooly' is related to the the word 'wool', and other adjectives that end in 'y'.
+                </div>
+
+
+                <p>Let's start with the simplest component - a single neuron. A neuron takes multiple inputs, multiplies each by a weight, adds a bias, and passes the result through an activation function.</p>
+
+                <div class="code-block">
+<pre>import numpy as np
+
+class Neuron:
+    def __init__(self, num_inputs):
+        # Initialize weights randomly
+        self.weights = np.random.randn(num_inputs) * 0.01
+        self.bias = 0
+    
+    def sigmoid(self, x):
+        """Sigmoid activation function"""
+        return 1 / (1 + np.exp(-np.clip(x, -250, 250)))  # Clipped to prevent overflow
+    
+    def forward(self, inputs):
+        """Forward pass through the neuron"""
+        # Calculate weighted sum
+        weighted_sum = np.dot(inputs, self.weights) + self.bias
+        # Apply activation function
+        output = self.sigmoid(weighted_sum)
+        return output
+
+# Example usage
+neuron = Neuron(3)  # Neuron with 3 inputs
+inputs = np.array([0.5, 0.3, 0.2])
+output = neuron.forward(inputs)
+print(f"Neuron output: {output}")
+</pre>
+                </div>
+
+                <h2>Building a Multi-Layer Network</h2>
+
+                <p>Now let's scale up to a full neural network with multiple layers. We'll create a simple feedforward network with one hidden layer.</p>
+
+                <div class="code-block">
+<pre>class NeuralNetwork:
+    def __init__(self, input_size, hidden_size, output_size):
+        # Initialize weights and biases for hidden layer
+        self.W1 = np.random.randn(input_size, hidden_size) * 0.01
+        self.b1 = np.zeros((1, hidden_size))
+        
+        # Initialize weights and biases for output layer
+        self.W2 = np.random.randn(hidden_size, output_size) * 0.01
+        self.b2 = np.zeros((1, output_size))
+    
+    def sigmoid(self, x):
+        return 1 / (1 + np.exp(-np.clip(x, -250, 250)))
+    
+    def sigmoid_derivative(self, x):
+        return x * (1 - x)
+    
+    def forward(self, X):
+        """Forward propagation"""
+        # Hidden layer
+        self.z1 = np.dot(X, self.W1) + self.b1
+        self.a1 = self.sigmoid(self.z1)
+        
+        # Output layer
+        self.z2 = np.dot(self.a1, self.W2) + self.b2
+        self.a2 = self.sigmoid(self.z2)
+        
+        return self.a2
+</pre>
+                </div>
+
+                <div class="note-box">
+                    <strong>Note:</strong> We're using small random weights (multiplied by 0.01) to prevent the "exploding gradients" problem during training.
+                </div>
+
+                <h2>The Learning Process: Backpropagation</h2>
+
+                <p>The magic of neural networks lies in their ability to learn from data. This happens through a process called backpropagation, where we calculate how much each weight contributed to the error and adjust accordingly.</p>
+
+                <div class="placeholder-content">
+                    <h3>📝 Placeholder: Backpropagation Implementation</h3>
+                    <p>This section will contain the detailed implementation of backpropagation algorithm, including:</p>
+                    <ul style="text-align: left; margin-top: 1rem;">
+                        <li>Cost function calculation</li>
+                        <li>Gradient computation</li>
+                        <li>Weight update rules</li>
+                        <li>Learning rate optimization</li>
+                    </ul>
+                </div>
+
+                <h2>Training the Network</h2>
+
+                <div class="placeholder-content">
+                    <h3>🔄 Placeholder: Training Loop</h3>
+                    <p>Complete training implementation including:</p>
+                    <ul style="text-align: left; margin-top: 1rem;">
+                        <li>Batch processing</li>
+                        <li>Epoch management</li>
+                        <li>Loss tracking</li>
+                        <li>Validation</li>
+                    </ul>
+                </div>
+
+                <h2>Testing Our Network</h2>
+
+                <p>Let's test our neural network on a simple problem - learning the XOR function, which is not linearly separable and thus requires a multi-layer network.</p>
+
+                <div class="placeholder-content">
+                    <h3>🧪 Placeholder: XOR Example</h3>
+                    <p>Implementation of XOR learning example with:</p>
+                    <ul style="text-align: left; margin-top: 1rem;">
+                        <li>Data preparation</li>
+                        <li>Network training</li>
+                        <li>Results visualization</li>
+                        <li>Performance analysis</li>
+                    </ul>
+                </div>
+
+                <h2>Improvements and Next Steps</h2>
+
+                <p>Our basic neural network is just the beginning! Here are some improvements you can make:</p>
+
+                <ul>
+                    <li><strong>Different activation functions:</strong> Try ReLU, tanh, or leaky ReLU</li>
+                    <li><strong>Better initialization:</strong> Use Xavier or He initialization</li>
+                    <li><strong>Regularization:</strong> Add dropout or L2 regularization</li>
+                    <li><strong>Optimization:</strong> Implement Adam, RMSprop, or momentum</li>
+                    <li><strong>More layers:</strong> Create deeper networks for complex problems</li>
+                </ul>
+
+                <div class="highlight-box">
+                    <strong>Coming up next:</strong> In our next article, we'll explore how to apply these concepts to text processing and build a simple language model!
+                </div>
+
+                <h2>Conclusion</h2>
+
+                <p>Building a neural network from scratch gives you invaluable insight into how these powerful models work under the hood. While frameworks like PyTorch and TensorFlow make it easier to build complex networks, understanding the fundamentals helps you debug issues, optimize performance, and design better architectures.</p>
+
+                <div class="placeholder-content">
+                    <h3>💭 Placeholder: Final Thoughts Section</h3>
+                    <p>Additional concluding remarks and call-to-action content</p>
+                </div>
+            </div>
+        </article>
+
+        <div style="text-align: center; margin: 2rem 0;">
+            <a href="page1.html" class="back-to-blog">← Back to Blog</a>
+        </div>
+
+        <footer>
+            <p>&copy; 2025 Small Language Model Blog. Built with curiosity and code.</p>
+        </footer>
+    </div>
+</body>
+</html>

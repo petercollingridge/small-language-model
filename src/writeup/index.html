@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Small Language Model Blog</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Small Language Model</h1>
+            <p>Trying to understand large language models by making a very small one</p>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#tutorials">Tutorials</a></li>
+                <li><a href="#experiments">Experiments</a></li>
+                <li><a href="#about">About</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <article class="blog-post">
+                <div class="post-meta">
+                    Published on October 3, 2025 • 5 min read
+                </div>
+                <h2 class="post-title">Building a Neural Network from Scratch</h2>
+                <div class="post-excerpt">
+                    <p>In this post, we'll explore how to build a simple neural network from the ground up using Python. We'll cover the fundamentals of forward propagation, backpropagation, and training loops.</p>
+                    
+                    <div class="highlight">
+                        <strong>Key Topics:</strong> Neural network architecture, gradient descent, activation functions
+                    </div>
+
+                    <div class="code-block">
+# Example: Simple neuron activation
+import numpy as np
+
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+# Forward pass
+inputs = np.array([0.5, 0.3, 0.2])
+weights = np.array([0.8, 0.4, 0.6])
+bias = 0.1
+
+output = sigmoid(np.dot(inputs, weights) + bias)
+print(f"Neuron output: {output}")
+                    </div>
+
+                    <p>Understanding these core concepts is essential for building more complex language models and neural architectures...</p>
+                </div>
+                <a href="article.html" class="read-more">Read Full Article</a>
+            </article>
+
+            <article class="blog-post">
+                <div class="post-meta">
+                    Published on September 28, 2025 • 8 min read
+                </div>
+                <h2 class="post-title">Text Processing and Tokenization</h2>
+                <div class="post-excerpt">
+                    <p>Before feeding text into our language model, we need to convert it into a format that neural networks can understand. This process involves tokenization, encoding, and creating vocabulary mappings.</p>
+                    
+                    <div class="code-block">
+# Simple tokenization example
+text = "Hello world! How are you?"
+tokens = text.lower().split()
+vocab = {word: i for i, word in enumerate(set(tokens))}
+print(f"Vocabulary: {vocab}")
+                    </div>
+
+                    <p>We'll explore different tokenization strategies, from word-level to character-level approaches, and discuss their trade-offs in the context of small language models...</p>
+                </div>
+                <a href="#" class="read-more">Read Full Article</a>
+            </article>
+
+            <article class="blog-post">
+                <div class="post-meta">
+                    Published on September 22, 2025 • 6 min read
+                </div>
+                <h2 class="post-title">Visualizing Neural Network Training</h2>
+                <div class="post-excerpt">
+                    <p>Understanding how neural networks learn is crucial for debugging and improving model performance. In this post, we create interactive visualizations to show how weights and activations change during training.</p>
+                    
+                    <div class="highlight">
+                        <strong>Tools used:</strong> SVG graphics, Python matplotlib, real-time plotting
+                    </div>
+
+                    <p>We'll build custom visualization tools to track loss curves, weight distributions, and activation patterns throughout the training process...</p>
+                </div>
+                <a href="#" class="read-more">Read Full Article</a>
+            </article>
+
+            <article class="blog-post">
+                <div class="post-meta">
+                    Published on September 15, 2025 • 4 min read
+                </div>
+                <h2 class="post-title">Getting Started with Markov Chains</h2>
+                <div class="post-excerpt">
+                    <p>Before diving into complex neural networks, let's understand simpler probabilistic models. Markov chains provide a great foundation for understanding sequence modeling and text generation.</p>
+                    
+                    <div class="code-block">
+# Simple Markov chain for text generation
+transitions = {
+    "the": ["quick", "lazy", "brown"],
+    "quick": ["brown", "fox"],
+    "brown": ["fox", "dog"]
+}
+                    </div>
+
+                    <p>We'll implement a basic Markov chain text generator and compare its outputs with more sophisticated neural approaches...</p>
+                </div>
+                <a href="#" class="read-more">Read Full Article</a>
+            </article>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 Small Language Model Blog. Built with curiosity and code.</p>
+        </footer>
+    </div>
+</body>
+</html>

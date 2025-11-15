@@ -1,6 +1,5 @@
 import html
 import torch
-import torch.nn.functional as F
 
 from .utils import get_attribute_string, wrap_in_group
 
