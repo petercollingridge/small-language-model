@@ -1,23 +1,25 @@
-from utils import text_element
+from vis.utils import text_element
 
-def draw_svg_graph(points):
+
+def plot_embeddings(labels, embeddings):
     svg_width = 200
     svg_height = 200
     margin = 10
 
     # Find min and max values for scaling
-    x_values = [point[1] for point in points]
-    y_values = [point[2] for point in points]
+    x_values = embeddings[0]
+    y_values = embeddings[1]
+
     x_min, x_max = min(x_values), max(x_values)
     y_min, y_max = min(y_values), max(y_values)
     max_value = max(abs(x_min), abs(x_max), abs(y_min), abs(y_max))
     max_range = 2 * max_value
 
     def scale_x(x):
-        return margin + (x + max_value) / max_range * (svg_width - 2 * margin)
+        return round(float(margin + (x + max_value) / max_range * (svg_width - 2 * margin)), 1)
 
     def scale_y(y):
-        return svg_height - margin - (y + max_value) / max_range * (svg_height - 2 * margin)
+        return round(float(svg_height - margin - (y + max_value) / max_range * (svg_height - 2 * margin)), 1)
 
     # Create SVG elements
     svg_elements = [
@@ -31,8 +33,9 @@ def draw_svg_graph(points):
     svg_elements.append(f'<line x1="{x0}" y1="{margin}" x2="{x0}" y2="{svg_height - margin}" stroke="black"/>')
 
     # Plot points and labels
-    for label, x, y in points:
-        cx, cy = scale_x(x), scale_y(y)
+    for i, label in enumerate(labels):
+        cx = scale_x(x_values[i])
+        cy = scale_y(y_values[i])
         svg_elements.append(f'<path d="M{cx - 3} {cy - 3}l7 7m0 -7l-7 7" fill="none" stroke="red"/>')
         svg_elements.append(text_element(label, {'x': cx + 5, 'y': cy - 5, 'font-size': 12, 'fill': 'black'}))
 
@@ -61,9 +64,7 @@ if __name__ == "__main__":
         [-4.3258, -0.4468,  5.7416, -5.0142, -5.0142, -5.0142,  6.5577, -5.0142, 1.8858]]
     tokens = ['<>', 'are', 'eat', 'grass', 'herbivores', 'jumping', 'like', 'meek', 'sheep']
 
-    points = [[tokens[i], vector[0][i], vector[1][i]] for i in range(len(tokens))]
-
-    svg_content = draw_svg_graph(points)
+    svg_content = plot_embeddings(tokens, vector)
 
     with open("chart-1b.svg", "w") as f:
         f.write(svg_content)

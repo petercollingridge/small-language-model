@@ -1,0 +1,31 @@
+<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+<style>
+    text {
+      font-family: Arial, sans-serif;
+      fill: black;
+      text-anchor: middle;
+    }
+    .cross {
+      stroke: red;
+      fill: none;
+      opacity: 0.8;
+    }
+</style>
+<line x1="10" y1="100.0" x2="190" y2="100.0" stroke="black"/>
+<line x1="100.0" y1="10" x2="100.0" y2="190" stroke="black"/>
+
+<path class="cross" d="M187 175.5l7 7m0 -7l-7 7"/>
+<text x="190" y="174" font-size="12">&lt;&gt;</text>
+
+<path class="cross" d="M34.3 38.7l7 7m0 -7l-7 7"/>
+<text x="38" y="37" font-size="12">are</text>
+
+<path class="cross" d="M160.5 64.3l7 7m0 -7l-7 7"/>
+<text x="164" y="61" font-size="12">herbivores</text>
+
+<path class="cross" d="M70.4 176.1l7 7m0 -7l-7 7"/>
+<text x="74" y="173" font-size="12">sheep</text>
+
+<path class="cross" d="M160.5 64.3l7 7m0 -7l-7 7"/>
+<text x="164" y="81" font-size="12">wooly</text>
+</svg>

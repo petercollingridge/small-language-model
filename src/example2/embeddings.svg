@@ -1,0 +1,18 @@
+<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+<line x1="10" y1="100.0" x2="190" y2="100.0" stroke="black"/>
+<line x1="100.0" y1="10" x2="100.0" y2="190" stroke="black"/>
+<path d="M120.9 185.9l7 7m0 -7l-7 7" fill="none" stroke="red"/>
+<text x="128.9" y="183.9" font-size="12" fill="black">&lt;&gt;</text>
+<path d="M7.0 82.5l7 7m0 -7l-7 7" fill="none" stroke="red"/>
+<text x="15.0" y="80.5" font-size="12" fill="black">are</text>
+<path d="M162.4 91.6l7 7m0 -7l-7 7" fill="none" stroke="red"/>
+<text x="170.4" y="89.6" font-size="12" fill="black">eat</text>
+<path d="M105.5 38.9l7 7m0 -7l-7 7" fill="none" stroke="red"/>
+<text x="113.5" y="36.9" font-size="12" fill="black">grass</text>
+<path d="M105.5 38.9l7 7m0 -7l-7 7" fill="none" stroke="red"/>
+<text x="113.5" y="36.9" font-size="12" fill="black">herbivores</text>
+<path d="M41.6 152.5l7 7m0 -7l-7 7" fill="none" stroke="red"/>
+<text x="49.6" y="150.5" font-size="12" fill="black">sheep</text>
+<path d="M105.5 38.9l7 7m0 -7l-7 7" fill="none" stroke="red"/>
+<text x="113.5" y="36.9" font-size="12" fill="black">wooly</text>
+</svg>

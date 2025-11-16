@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1020" height="280">
+
+<style>
+    .activation { display: none; pointer-events: none; }
+    .click-box {fill-opacity: 0;}
+    .edge { stroke-width: 2; }
+    .node { fill: #ccc; stroke: white; stroke-width: 2; }
+    .node-activation { stroke: white; stroke-width: 0.5; }
+    text { font-family: sans-serif; font-size: 12px; fill: black; alignment-baseline: middle; text-anchor: middle; }
+    text.prob { font-family: sans-serif; font-size: 11px; fill: black; alignment-baseline: baseline; }
+</style>
+  <circle class="node" cx="60" cy="140.0" r="40" />
+  <text x="60" y="140.0">&lt;S&gt;</text>
+  <circle class="node" cx="240" cy="140.0" r="40" />
+  <text x="240" y="140.0">sheep</text>
+  <circle class="node" cx="420" cy="140.0" r="40" />
+  <text x="420" y="140.0">are</text>
+  <circle class="node" cx="600" cy="60.0" r="40" />
+  <text x="600" y="60.0">herbivores</text>
+  <circle class="node" cx="600" cy="220.0" r="40" />
+  <text x="600" y="220.0">wooly</text>
+  <circle class="node" cx="780" cy="140.0" r="40" />
+  <text x="780" y="140.0">&lt;E&gt;</text>
+  <line class="edge" x1="101.0" y1="141.0" x2="199.0" y2="139.0" stroke="blue" />
+  <text class="prob" x="150.0" y="137.0" style="text-anchor:middle">1.00</text>
+  <line class="edge" x1="457.55246194481026" y1="124.7544613578621" x2="562.4475380551897" y2="75.2455386421379" stroke="blue" />
+  <text class="prob" x="509.1877230678931" y="98.17237690275948" style="text-anchor:end">0.50</text>
+  <line class="edge" x1="457.55246194481026" y1="157.24553864213792" x2="562.4475380551897" y2="202.75446135786208" stroke="blue" />
+  <text class="prob" x="510.8122769321069" y="178.17237690275948" style="text-anchor:start">0.50</text>
+  <line class="edge" x1="637.5524619448103" y1="77.2455386421379" x2="742.4475380551897" y2="122.7544613578621" stroke="blue" />
+  <text class="prob" x="690.8122769321069" y="98.17237690275948" style="text-anchor:start">1.00</text>
+  <line class="edge" x1="637.5524619448103" y1="204.75446135786208" x2="742.4475380551897" y2="155.24553864213792" stroke="blue" />
+  <text class="prob" x="689.1877230678931" y="178.17237690275948" style="text-anchor:end">1.00</text>
+  <line class="edge" x1="281.0" y1="141.0" x2="379.0" y2="139.0" stroke="blue" />
+  <text class="prob" x="330.0" y="137.0" style="text-anchor:middle">1.00</text>
+</svg>
