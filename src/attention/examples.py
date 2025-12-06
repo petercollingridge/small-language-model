@@ -1,24 +1,45 @@
-import torch
-
 from BigramModel import BigramLanguageModel
-from utils import get_batch, get_text, run_model, Tokeniser
+from utils import get_all_seqs, get_text, get_seqs, run_model, Tokeniser
 
 
 def DNA_example():
-    data = get_text("DNA/data.txt")
-    seqs = [name.upper().strip() for name in data.splitlines()]
-    tokeniser = Tokeniser(''.join(seqs))
-
-    encoded_seqs = [tokeniser.encode(seq) for seq in seqs]
-    xb, yb = get_batch(encoded_seqs)
+    text = get_text("DNA/data.txt")
+    seqs = get_seqs(text)
+    tokeniser = Tokeniser(seqs)
 
     # Create model
     model = BigramLanguageModel(tokeniser.vocab_size)
 
-    run_model(model, xb, yb)
+    # Function to get batches of training data
+    encoded_seqs = [tokeniser.encode(seq) for seq in seqs]
+    get_batch = get_all_seqs(encoded_seqs)
 
-    start_idx = torch.zeros((1, 1), dtype=torch.long)
-    print(tokeniser.decode(model.generate(idx=start_idx, max_new_tokens=5)[0].tolist()))
+    run_model(model, get_batch)
+
+    # Generate some text
+    print(model.generate(tokeniser))
+    print(model.generate(tokeniser))
+
+
+def beast_quest_example():
+    text = get_text("BeastQuest/short_names.txt")
+    seqs = get_seqs(text)
+    tokeniser = Tokeniser(seqs)
+
+    # Create model
+    model = BigramLanguageModel(tokeniser.vocab_size)
+
+    # Function to get batches of training data
+    encoded_seqs = [tokeniser.encode(seq) for seq in seqs]
+
+    get_batch = get_all_seqs(encoded_seqs)
+
+    run_model(model, get_batch)
+
+    # Generate some text
+    print(model.generate(tokeniser))
+    print(model.generate(tokeniser))
 
 if __name__ == "__main__":
-    DNA_example()
+    # DNA_example()
+    beast_quest_example()

@@ -19,7 +19,10 @@ class BigramLanguageModel(nn.Module):
             loss = F.cross_entropy(logits, targets) if targets is not None else None
         return logits, loss
 
-    def generate(self, idx, max_new_tokens):
+    def generate(self, tokeniser, max_new_tokens=5):
+        # Start with the first token, which should be <BOS>
+        idx = torch.zeros((1, 1), dtype=torch.long)
+
         # idx is (B, T) array of indices in the current context
         for _ in range(max_new_tokens):
             # get the predictions
@@ -32,4 +35,5 @@ class BigramLanguageModel(nn.Module):
             idx_next = torch.multinomial(probs, num_samples=1) # (B, 1)
             # append sampled index to the running sequence
             idx = torch.cat((idx, idx_next), dim=1) # (B, T+1)
-        return idx
+
+        return tokeniser.decode(idx[0].tolist())
