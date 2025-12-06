@@ -11,7 +11,8 @@ class Tokeniser:
     """ Class that converts characters to integers and back """
 
     def __init__(self, seqs):
-        self.block_size = max(len(seq) for seq in seqs)  # context size
+        # Block size is the max word length plus 2 for BOS and EOS
+        self.block_size = max(len(seq) for seq in seqs) + 2
         self.chars = sorted(list(set(''.join(seqs))))
         self.vocab = [BOS, PAD, EOS] + list(self.chars)
         self.vocab_size = len(self.vocab)
@@ -20,8 +21,8 @@ class Tokeniser:
 
     def encode(self, text):
         encoded_text = [self.stoi[char] for char in text]
-        if len(encoded_text) < self.block_size:
-            encoded_text += [self.stoi[PAD]] * (self.block_size - len(encoded_text))
+        if len(encoded_text) < self.block_size + 2:
+            encoded_text += [self.stoi[PAD]] * (self.block_size - len(encoded_text) - 1)
         return [self.stoi[BOS]] + encoded_text + [self.stoi[EOS]]
 
     def decode(self, lst):
@@ -44,7 +45,7 @@ def get_seqs(text):
     return seqs
 
 
-def get_all_seqs(seqs):
+def get_all_seqs_old(seqs):
     """
     Given a list of vectors, return a function that returns all the vectors as tensors,
     shifted by one for the targets
@@ -55,6 +56,41 @@ def get_all_seqs(seqs):
     def get_batch():
         x = torch.stack([torch.tensor(seq[:-1], dtype=torch.long) for seq in seqs])  # (B, T)
         y = torch.stack([torch.tensor(seq[1:], dtype=torch.long) for seq in seqs])  # (B, T)
+        return x, y
+    return get_batch
+
+
+def get_all_seqs(seqs):
+    """
+    Given a list of vectors, return a function that returns all the vectors as tensors,
+    shifted by one for the targets
+    B: batch size, i.e. number of sequences
+    T: time steps, i.e. length of each sequence - 1
+    """
+
+    seqs = torch.tensor(seqs, dtype=torch.long) # (B, T)
+
+    def get_batch():
+        x = seqs[:, :-1]  # (B, T-1) - all sequences, excluding last token
+        y = seqs[:, 1:]   # (B, T-1) - all sequences, excluding first token
+        return x, y
+    return get_batch
+
+
+def get_random_seqs(seqs, batch_size):
+    """
+    Given a list of vectors, return a function that returns a random subset of the vectors as tensors,
+    shifted by one for the targets
+    B: batch size, i.e. number of sequences
+    T: time steps, i.e. length of each sequence - 1
+    """
+
+    seqs = torch.tensor(seqs, dtype=torch.long) # (B, T)
+
+    def get_batch():
+        indices = torch.randint(0, len(seqs), (batch_size,))
+        x = seqs[indices, :-1]  # (B, T-1) - random subset of sequences, excluding last token
+        y = seqs[indices, 1:]   # (B, T-1) - random subset of sequences, excluding first token
         return x, y
     return get_batch
 
