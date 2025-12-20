@@ -1,0 +1,5 @@
+sheep are wooly
+sheep are herbivores
+sheep eat grass
+sheep like grass
+sheep like herbivores

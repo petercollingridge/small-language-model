@@ -79,10 +79,7 @@ class BigramLanguageModelWithPositionalEncoding(nn.Module):
             loss = F.cross_entropy(logits, targets) if targets is not None else None
         return logits, loss
 
-    def generate(self, tokeniser, max_new_tokens=10):
-        # Start with the first token, which should be <BOS>
-        tokens = torch.zeros((1, 1), dtype=torch.long)
-
+    def generate(self, tokens, max_new_tokens=10):
         # tokens is (B, T) array of indices in the current context
         for _ in range(max_new_tokens):
             # Get predictions
@@ -100,5 +97,4 @@ class BigramLanguageModelWithPositionalEncoding(nn.Module):
             # Append sampled token to the running sequence
             tokens = torch.cat((tokens, next_token), dim=1) # (B, T + 1)
 
-        # Tokens is a (1, T) array of token indices, so get first item to reduce to list
-        return tokeniser.decode(tokens[0].tolist())
+        return tokens

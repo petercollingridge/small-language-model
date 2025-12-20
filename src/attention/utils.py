@@ -79,8 +79,8 @@ def get_all_seqs(seqs):
 
 def get_random_seqs(seqs, batch_size):
     """
-    Given a list of vectors, return a function that returns a random subset of the vectors as tensors,
-    shifted by one for the targets
+    Given a list of vectors, return a function that returns a random subset of the vectors as
+    tensors, shifted by one for the targets.
     B: batch size, i.e. number of sequences
     T: time steps, i.e. length of each sequence - 1
     """
@@ -113,3 +113,14 @@ def run_model(model, get_batch, steps=10000):
 
         if step % 1000 == 0:
             print(f"Step {step}, loss {loss.item():.4f}")
+
+
+def generate_text(model, tokeniser, n = 5, max_new_tokens=20):
+    for _ in range(n):
+        # Start with the first token, which should be <BOS>
+        first_token = torch.zeros((1, 1), dtype=torch.long)
+        tokens = model.generate(first_token, max_new_tokens=max_new_tokens)
+
+        # Tokens is a (1, T) array of token indices, so get first item to reduce to list
+        output = tokeniser.decode(tokens[0].tolist())
+        print(output)
